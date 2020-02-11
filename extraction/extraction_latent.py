@@ -70,7 +70,8 @@ class FeatureExtraction_Latent:
                                          show_minutiae=False, minu_file=None):
         block = False
         block_size = 16
-        img0 = io.imread(img_file, mode='L')  # / 255.0
+        #img0 = io.imread(img_file, mode='L')  # / 255.0
+        img0 = io.imread(img_file)
 
         img = img0.copy()
 
@@ -291,7 +292,6 @@ class FeatureExtraction_Latent:
 
             minu_files.sort(key=lambda filename: int(''.join(filter(str.isdigit, filename))))
         for i, img_file in enumerate(img_files):
-            print i, img_file
             img_name = os.path.basename(img_file)
             if template_dir is not None:
                 fname = template_dir + os.path.splitext(img_name)[0] + '.dat'
@@ -312,7 +312,7 @@ class FeatureExtraction_Latent:
                                                                                           show_minutiae=False)
 
             stop = timeit.default_timer()
-            print stop - start
+            print(stop - start)
 
             fname = template_dir + os.path.splitext(img_name)[0] + '.dat'
             template.Template2Bin_Byte_TF_C(fname, latent_template, isLatent=True)
@@ -361,6 +361,7 @@ def main(image_dir, template_dir):
                                          enhancement_model_dir=enhancement_model_dir, minu_model_dirs=minu_model_dirs)
     if not os.path.exists(template_dir):
         os.makedirs(template_dir)
+        
     print("Starting feature extraction (batch)...")
     LF_Latent.feature_extraction(image_dir=image_dir, template_dir=template_dir, minu_path=config['MinuPath'])
 

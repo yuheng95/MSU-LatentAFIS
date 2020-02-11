@@ -89,7 +89,9 @@ def Template2Bin_Byte_latent(outfile, version=1, T=None):
         tmp[0] = version
         tmp = tuple(tmp)
         file.write(struct.pack('H' * 12, *tmp))
-        if template is None or len(T.minu_template) == 0:
+
+        #if template is None or len(T.minu_template) == 0:
+        if T is None or len(T.minu_template) == 0:
             tmp = (0, 0, 0, 0)
             file.write(struct.pack('H' * 4, *tmp))
             return

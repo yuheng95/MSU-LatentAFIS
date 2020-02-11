@@ -35,14 +35,18 @@ def load_model(model, filename, cuda):
                 state_dict[key] = torch.load(
                     filename, map_location=lambda storage, loc: storage)
     else:
-        raise (Exception("No checkpoint found at '{}'".format(filename)))
+        raise (Exception("No checkpoint found at '{}'".format(filename)))\
+
     for key_model in list(model):
         model_dict = model[key_model].state_dict()
         update_dict = {}
         valid_keys = list(model_dict)
+
         for i, key in enumerate(state_dict[key_model]):
             update_dict[valid_keys[i]] = state_dict[key_model][key]
-        model[key_model].load_state_dict(update_dict)
+
+    model[key_model].load_state_dict(state_dict, strict = False)
+        
     return model
 
 
@@ -64,7 +68,7 @@ def setup(filename_model, cuda):
 
 
 def extract_features(model, dataloader, cuda):
-    torch.cuda.empty_cache()
+    #torch.cuda.empty_cache()
     for key in list(model):
         model[key].eval()
 
@@ -122,7 +126,7 @@ def template_compression(input_dir='', output_dir=None, model_path=None, isLaten
         print ("File list empty", file_list)
         return
 
-    file_list.sort(key=lambda filename: int(''.join(filter(str.isdigit, filename.encode("utf-8")))))
+    file_list = sorted(file_list)
 
     # Create Model
     # filename_model = './dim_reduction/testmodel'
@@ -223,7 +227,6 @@ def template_compression_single(input_file='', output_dir=None, model_path=None,
             features[k] = features[k] / norm * 1.73
         T.texture_template[j].des = features.copy()
         template.Template2Bin_Byte_TF_C(output_file, T, isLatent=isLatent, save_mask=False)
-
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
